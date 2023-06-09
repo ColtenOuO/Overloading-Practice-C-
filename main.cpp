@@ -2,14 +2,39 @@
 
 using namespace std;
 
+long long gcd(long long a,long long b);
+long long lcm(long long a,long long b);
+
 class Function{
-
     private:
-        int a,b,c; // a b/c
-
+        long long a,b,c; // a b/c
+    public:
+        Function(long long x,long long y,long long z) : a(x) , b(y) , c(z) {} // Constructure
+        Function operator+(Function&);
+        Function operator-(const Function&);
+        Function operator*(const Function&);
+        Function operator/(const Function&);
+        Function operator=(const Function&);
+        Function operator<(const Function&);
+        Function operator>(const Function&);
+        Function operator==(const Function&);
+        Function operator<=(const Function&);
+        Function operator>=(const Function&);
+        Function operator!=(const Function&);
+    
     friend istream &operator>>(istream &s,Function &input);
     friend ostream &operator<<(ostream &s,Function p); 
 };
+Function Function::operator+(Function &y)
+{
+    Function* x = this;
+    x -> b = ( x -> b ) + ( x -> a ) * ( x -> c );
+    y.b = y.b + y.a  * y.c;
+    
+    long long g = lcm( x -> c , y.c );
+
+    return Function( 0LL , ( x -> b ) * ( g / ( x -> c ) ) + y.b * ( g / ( y.c ) ) , g  );
+}
 istream &operator>>(istream &s,Function &input)
 {
     input.a = 0; // init
@@ -18,7 +43,7 @@ istream &operator>>(istream &s,Function &input)
     string str;
     while( cin >> str )
     {
-        int num = 0;
+        long long num = 0;
         bool slash = false;
         for(int i=0;i<str.size();i++)
         {
@@ -43,11 +68,27 @@ istream &operator>>(istream &s,Function &input)
 ostream &operator<<(ostream &s, Function p) { 
     s << p.a << " " << p.b << " " << p.c;
     return s; 
-} 
+}
+long long gcd(long long a,long long b)
+{
+    while( b != 0 )
+    {
+        long long c = a % b;
+        a = b;
+        b = c;
+    }
+
+    return a;
+}
+long long lcm(long long a,long long b)
+{
+    return a * b / gcd(a,b);
+}
 int main()
 {
-    Function x,y;
+    Function x(0LL,0LL,0LL),y(0LL,0LL,0LL),z(0LL,0LL,0LL);
     cout << "請輸入兩個分數\n";
     cin >> x >> y;
-    cout << x << " " << y << "\n";
+
+    cout << ( x + y ) << "\n";
 }
