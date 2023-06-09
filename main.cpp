@@ -13,16 +13,29 @@ class Function{
 istream &operator>>(istream &s,Function &input)
 {
     input.a = 0; // init
+    
+    char c;
     string str;
-    getline(cin,str);
-    int num = 0;
-    for(int i=0;i<str.size();i++)
+    while( cin >> str )
     {
-        if( str[i] >= '0' && str[i] <= '9' ) num *= 10 , num += str[i] - '0';
-        else if( str[i] == ' ' ) input.a = num , num = 0;
-        else if( str[i] == '/' ) input.b = num , num = 0;
-        
-        if( i == str.size() - 1 ) input.c = num;
+        int num = 0;
+        bool slash = false;
+        for(int i=0;i<str.size();i++)
+        {
+            if( str[i] >= '0' && str[i] <= '9' ) num *= 10 , num += str[i] - '0';
+            if( str[i] == '/' ) input.b = num , num = 0 , slash = true;
+        }
+
+        if( slash == false ) // 分數還沒讀取完，現在只讀取到帶分數的數字而已
+        {
+            input.a = num;
+            continue;
+        } 
+        else
+        {
+            input.c = num;
+            break;
+        }
     }
 
     return s;
