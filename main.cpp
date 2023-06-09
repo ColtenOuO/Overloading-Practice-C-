@@ -1,3 +1,4 @@
+
 #include <iostream>
 
 using namespace std;
@@ -50,4 +51,5 @@ int main()
     cout << "請輸入兩個分數\n";
     cin >> x >> y;
     cout << x << " " << y << "\n";
+    
 }
