@@ -5,39 +5,49 @@ using namespace std;
 long long gcd(long long a,long long b);
 long long lcm(long long a,long long b);
 
-class Function{
+class Fraction{
     private:
-        long long a,b,c; // a b/c
+        long long whole,numerator,denominator; // whole numerator/denominator
     public:
-        Function(long long x,long long y,long long z) : a(x) , b(y) , c(z) {} // Constructure
-        Function operator+(Function&);
-        Function operator-(const Function&);
-        Function operator*(const Function&);
-        Function operator/(const Function&);
-        Function operator=(const Function&);
-        Function operator<(const Function&);
-        Function operator>(const Function&);
-        Function operator==(const Function&);
-        Function operator<=(const Function&);
-        Function operator>=(const Function&);
-        Function operator!=(const Function&);
+        Fraction(long long x,long long y,long long z) : whole(x) , numerator(y) , denominator(z) {} // Constructure
+        Fraction operator+(Fraction&);
+        Fraction operator-(Fraction&);
+        Fraction operator*(Fraction&);
+        Fraction operator/(Fraction&);
+        Fraction operator=(Fraction&);
+        Fraction operator<(Fraction&);
+        Fraction operator>(Fraction&);
+        Fraction operator==(Fraction&);
+        Fraction operator<=(Fraction&);
+        Fraction operator>=(Fraction&);
+        Fraction operator!=(Fraction&);
     
-    friend istream &operator>>(istream &s,Function &input);
-    friend ostream &operator<<(ostream &s,Function p); 
+    friend istream &operator>>(istream &s,Fraction &input);
+    friend ostream &operator<<(ostream &s,Fraction p); 
 };
-Function Function::operator+(Function &y)
+Fraction Fraction::operator+(Fraction &y)
 {
-    Function* x = this;
-    x -> b = ( x -> b ) + ( x -> a ) * ( x -> c );
-    y.b = y.b + y.a  * y.c;
+    Fraction* x = this;
+    x -> numerator = ( x -> numerator ) + ( x -> whole ) * ( x -> denominator );
+    y.numerator = y.numerator + y.whole  * y.denominator;
     
-    long long g = lcm( x -> c , y.c );
+    long long g = lcm( x -> denominator , y.denominator );
 
-    return Function( 0LL , ( x -> b ) * ( g / ( x -> c ) ) + y.b * ( g / ( y.c ) ) , g  );
+    return Fraction( 0LL , ( x -> numerator ) * ( g / ( x -> denominator ) ) + y.numerator * ( g / y.denominator ) , g  );
 }
-istream &operator>>(istream &s,Function &input)
+Fraction Fraction::operator-(Fraction &y)
 {
-    input.a = 0; // init
+    Fraction* x = this;
+    x -> numerator = ( x -> numerator ) + ( x -> whole ) * ( x -> denominator );
+    y.numerator = y.numerator + y.whole * y.denominator;
+
+    long long g = lcm( x -> denominator , y.denominator );
+
+    return Fraction( 0LL , ( x -> numerator ) * ( g / ( x -> denominator ) ) - y.numerator * ( g / y.denominator ) , g );
+}
+istream &operator>>(istream &s,Fraction &input)
+{
+    input.whole = 0; // init
     
     char c;
     string str;
@@ -48,25 +58,25 @@ istream &operator>>(istream &s,Function &input)
         for(int i=0;i<str.size();i++)
         {
             if( str[i] >= '0' && str[i] <= '9' ) num *= 10 , num += str[i] - '0';
-            if( str[i] == '/' ) input.b = num , num = 0 , slash = true;
+            if( str[i] == '/' ) input.numerator = num , num = 0 , slash = true;
         }
 
         if( slash == false ) // 分數還沒讀取完，現在只讀取到帶分數的數字而已
         {
-            input.a = num;
+            input.whole = num;
             continue;
         } 
         else
         {
-            input.c = num;
+            input.denominator = num;
             break;
         }
     }
 
     return s;
 }
-ostream &operator<<(ostream &s, Function p) { 
-    s << p.a << " " << p.b << " " << p.c;
+ostream &operator<<(ostream &s, Fraction p) { 
+    s << p.whole << " " << p.numerator << " " << p.denominator;
     return s; 
 }
 long long gcd(long long a,long long b)
@@ -86,7 +96,7 @@ long long lcm(long long a,long long b)
 }
 int main()
 {
-    Function x(0LL,0LL,0LL),y(0LL,0LL,0LL),z(0LL,0LL,0LL);
+    Fraction x(0LL,0LL,0LL),y(0LL,0LL,0LL),z(0LL,0LL,0LL);
     cout << "請輸入兩個分數\n";
     cin >> x >> y;
 
