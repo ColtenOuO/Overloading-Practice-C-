@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 using namespace std;
@@ -15,41 +14,233 @@ class Fraction{
         Fraction operator-(Fraction&);
         Fraction operator*(Fraction&);
         Fraction operator/(Fraction&);
-        Fraction operator=(Fraction&);
-        Fraction operator<(Fraction&);
-        Fraction operator>(Fraction&);
-        Fraction operator==(Fraction&);
-        Fraction operator<=(Fraction&);
-        Fraction operator>=(Fraction&);
-        Fraction operator!=(Fraction&);
+        bool operator<(Fraction&);
+        bool operator>(Fraction&);
+        bool operator==(Fraction&);
+        bool operator<=(Fraction&);
+        bool operator>=(Fraction&);
+        bool operator!=(Fraction&);
+
+        void Setter(long long x,long long y,long long z)
+        {
+            whole = x , numerator = y , denominator = z;
+        }
+        Fraction Getter()
+        {
+            return Fraction(whole,numerator,denominator);
+        }
+        void reduction() // 約分
+        {
+            long long more = numerator / denominator;
+            long long mod = numerator % denominator;
+
+            whole += more;
+            numerator = mod;
+
+            int g = gcd(numerator,denominator);
+            numerator /= g , denominator /= g;
+        }
     
-    friend istream &operator>>(istream &s,Fraction &input);
+    friend istream &operator>>(istream &s,Fraction &input); // 讓 ifstream 與 ostream 能夠存取 Fraction 的 private member
     friend ostream &operator<<(ostream &s,Fraction p); 
 };
+void validate_overloading(Fraction x,Fraction y)
+{
+    Fraction s(1,2,3);
+    s.Setter(2,3,4); // Setter 驗證
+    Fraction a = x , b = y;
+    cout << "驗證 " << a.Getter() << "與" << b.Getter() << " 兩個分數的各個操作\n\n"; // 驗證 Getter
+
+    cout << a + b << "\n";
+    a = x , b = y; // 因為 pass by reference 所以可能有動到原本分數的樣子，還原回去
+    cout << a - b << "\n";
+    a = x , b = y; // 因為 pass by reference 所以可能有動到原本分數的樣子，還原回去
+    cout << a * b << "\n";
+    a = x , b = y; // 因為 pass by reference 所以可能有動到原本分數的樣子，還原回去
+    cout << a / b << "\n";
+    a = x , b = y; // 因為 pass by reference 所以可能有動到原本分數的樣子，還原回去
+
+    if( a < b ) cout << x << "<" << y << " 成立\n";
+    else cout << x << "<" << y << " 不成立\n";
+
+    if( a > b ) cout << x << ">" << y << " 成立\n";
+    else cout << x << ">" << y << " 不成立\n";
+
+    if( a <= b ) cout << x << "<=" << y << " 成立\n";
+    else cout << x << "<=" << y << " 不成立\n";
+
+    if( a >= b ) cout << x << ">=" << y << " 成立\n";
+    else cout << x << ">=" << y << " 不成立\n";
+
+    if( a == b ) cout << x << "==" << y << " 成立\n";
+    else cout << x << "==" << y << " 不成立\n";
+
+    if( a != b ) cout << x << "!=" << y << " 成立\n";
+    else cout << x << "!=" << y << " 不成立\n";
+
+    return;
+}
 Fraction Fraction::operator+(Fraction &y)
 {
+    cout << "進行通分相加:" << *this << " " << y << "\n\n";
+
+    Fraction save1 = *this , save2 = y;
+
     Fraction* x = this;
-    x -> numerator = ( x -> numerator ) + ( x -> whole ) * ( x -> denominator );
-    y.numerator = y.numerator + y.whole  * y.denominator;
     
     long long g = lcm( x -> denominator , y.denominator );
 
-    return Fraction( 0LL , ( x -> numerator ) * ( g / ( x -> denominator ) ) + y.numerator * ( g / y.denominator ) , g  );
+    x -> numerator *= ( ( g / ( x -> denominator ) ) );
+    y.numerator *= ( g / y.denominator );
+    Fraction z( ( x -> whole ) + y.whole , ( x -> numerator ) + y.numerator , g ); // 透過 Constructure 初始化
+
+    if( ( this -> denominator ) != y.denominator )
+    {
+        cout << "異分母分數相加，進行通分。分母是" << g << "\n";
+        cout << save1 << "+" << save2 << "=" << *x << "+" << y << "=" << z << "\n";
+        cout << "最終分數是: ";
+    }
+    else
+    {
+        cout << "同分母分數相加。分母是" << g << "\n";
+        cout << save1 << "+" << save2 << "=" << z << "\n";
+        cout << "最終分數是: ";
+    }
+
+    x -> denominator = y.denominator = g;
+
+    z.reduction();
+    return z;
 }
 Fraction Fraction::operator-(Fraction &y)
 {
-    Fraction* x = this;
-    x -> numerator = ( x -> numerator ) + ( x -> whole ) * ( x -> denominator );
-    y.numerator = y.numerator + y.whole * y.denominator;
+    cout << "進行通分相減:" << *this << " " << y << "\n\n";
 
+    Fraction save1 = *this , save2 = y;
+
+    Fraction* x = this;
+    
     long long g = lcm( x -> denominator , y.denominator );
 
-    return Fraction( 0LL , ( x -> numerator ) * ( g / ( x -> denominator ) ) - y.numerator * ( g / y.denominator ) , g );
+    x -> numerator *= ( ( g / ( x -> denominator ) ) );
+    y.numerator *= ( g / y.denominator );
+    Fraction z( ( x -> whole ) - y.whole , ( x -> numerator ) - y.numerator , g ); // 透過 Constructure 初始化
+
+    if( ( this -> denominator ) != y.denominator )
+    {
+        cout << "異分母分數相減，進行通分。分母是" << g << "\n";
+        cout << save1 << "-" << save2 << "=" << *x << "-" << y << "=" << z << "\n";
+        cout << "最終分數是: ";
+    }
+    else
+    {
+        cout << "同分母分數相減。分母是" << g << "\n";
+        cout << save1 << "-" << save2 << "=" << z << "\n";
+        cout << "最終分數是: ";
+    }
+
+    x -> denominator = y.denominator = g;
+
+    z.reduction();
+    return z;
+}
+Fraction Fraction::operator*(Fraction &y)
+{
+    Fraction* x = this;
+
+    Fraction z(0LL,0LL,0LL);
+
+    cout << *this << "*" << y << "=";
+
+    x-> numerator += ( x -> whole ) * ( x -> denominator );
+    y.numerator += ( y.whole ) * ( y.denominator );
+
+    z.denominator = ( x -> denominator ) * y.denominator;
+    z.numerator = ( x -> numerator ) * y.numerator;
+
+    x -> whole = 0 , y.whole = 0;
+
+    z.reduction();
+    return z;
+}
+Fraction Fraction::operator/(Fraction &y)
+{
+    Fraction* x = this;
+
+    Fraction z(0LL,0LL,0LL);
+
+    cout << *this << "/" << y << "=";
+
+    x-> numerator += ( x -> whole ) * ( x -> denominator );
+    y.numerator += ( y.whole ) * ( y.denominator );
+
+    swap(y.numerator,y.denominator); // 除法倒數
+
+    z.denominator = ( x -> denominator ) * y.denominator;
+    z.numerator = ( x -> numerator ) * y.numerator;
+
+    x -> whole = 0 , y.whole = 0;
+
+    z.reduction();
+    return z;
+}
+bool Fraction::operator<(Fraction &y)
+{
+    Fraction* x = this;
+    x-> numerator += ( x -> whole ) * ( x -> denominator );
+    y.numerator += ( y.whole ) * ( y.denominator );
+    x -> whole = 0 , y.whole = 0;
+
+    return ( x -> numerator * y.denominator ) < ( x -> denominator * y.numerator ); // 交叉相乘比大小，避免使用浮點數導致誤差
+}
+bool Fraction::operator>(Fraction &y)
+{
+    Fraction* x = this;
+    x-> numerator += ( x -> whole ) * ( x -> denominator );
+    y.numerator += ( y.whole ) * ( y.denominator );
+    x -> whole = 0 , y.whole = 0;
+
+    return ( x -> numerator * y.denominator ) > ( x -> denominator * y.numerator ); // 交叉相乘比大小，避免使用浮點數導致誤差
+}
+bool Fraction::operator<=(Fraction &y)
+{
+    Fraction* x = this;
+    x-> numerator += ( x -> whole ) * ( x -> denominator );
+    y.numerator += ( y.whole ) * ( y.denominator );
+    x -> whole = 0 , y.whole = 0;
+
+    return ( x -> numerator * y.denominator ) <= ( x -> denominator * y.numerator ); // 交叉相乘比大小，避免使用浮點數導致誤差
+}
+bool Fraction::operator>=(Fraction &y)
+{
+    Fraction* x = this;
+    x-> numerator += ( x -> whole ) * ( x -> denominator );
+    y.numerator += ( y.whole ) * ( y.denominator );
+    x -> whole = 0 , y.whole = 0;
+
+    return ( x -> numerator * y.denominator ) >= ( x -> denominator * y.numerator ); // 交叉相乘比大小，避免使用浮點數導致誤差
+}
+bool Fraction::operator==(Fraction &y)
+{
+    Fraction* x = this;
+    x-> numerator += ( x -> whole ) * ( x -> denominator );
+    y.numerator += ( y.whole ) * ( y.denominator );
+    x -> whole = 0 , y.whole = 0;
+
+    return ( x -> numerator * y.denominator ) == ( x -> denominator * y.numerator ); // 交叉相乘比大小，避免使用浮點數導致誤差
+}
+bool Fraction::operator!=(Fraction &y)
+{
+    Fraction* x = this;
+    x-> numerator += ( x -> whole ) * ( x -> denominator );
+    y.numerator += ( y.whole ) * ( y.denominator );
+    x -> whole = 0 , y.whole = 0;
+
+    return ( x -> numerator * y.denominator ) != ( x -> denominator * y.numerator ); // 交叉相乘比大小，避免使用浮點數導致誤差
 }
 istream &operator>>(istream &s,Fraction &input)
 {
     input.whole = 0; // init
-    
     char c;
     string str;
     while( cin >> str )
@@ -73,11 +264,10 @@ istream &operator>>(istream &s,Fraction &input)
             break;
         }
     }
-
     return s;
 }
 ostream &operator<<(ostream &s, Fraction p) { 
-    s << p.whole << " " << p.numerator << " " << p.denominator;
+    s << p.whole << " " << p.numerator << "/" << p.denominator;
     return s; 
 }
 long long gcd(long long a,long long b)
@@ -100,7 +290,8 @@ int main()
     Fraction x(0LL,0LL,0LL),y(0LL,0LL,0LL),z(0LL,0LL,0LL);
     cout << "請輸入兩個分數\n";
     cin >> x >> y;
-    cout << x << " " << y << "\n";
-    cout << ( x + y ) << "\n";
-
+    
+    validate_overloading(x,y);
+    
+    return 0;
 }
