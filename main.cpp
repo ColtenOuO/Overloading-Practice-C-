@@ -288,10 +288,16 @@ long long lcm(long long a,long long b)
 int main()
 {
     Fraction x(0LL,0LL,0LL),y(0LL,0LL,0LL),z(0LL,0LL,0LL);
-    cout << "請輸入兩個分數\n";
+    int opt;
+
+    cout << "請輸入 1 (從 fraction.txt 檔案讀取兩個分數) 或 2: (自行手動輸入兩個分數)\n";   
+    
+    cin >> opt;
+    if( opt == 1 ) freopen("fraction.txt","r",stdin);
+    else cout << "請輸入兩個分數\n";
     cin >> x >> y;
     
-    validate_overloading(x,y);
+    validate_overloading(x,y); // 跑出所有運算子 overloading 後的運算結果
     
     return 0;
 }
