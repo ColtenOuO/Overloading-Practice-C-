@@ -290,14 +290,26 @@ int main()
     Fraction x(0LL,0LL,0LL),y(0LL,0LL,0LL),z(0LL,0LL,0LL);
     int opt;
 
-    cout << "請輸入 1 (從 fraction.txt 檔案讀取兩個分數) 或 2: (自行手動輸入兩個分數)\n";   
+    cout << "請輸入 1 (從 fraction.txt 檔案讀取兩個分數) 或 2: (自行手動輸入兩個分數,不用添加運算符號,會列出所有結果)\n";   
     
     cin >> opt;
-    if( opt == 1 ) freopen("fraction.txt","r",stdin);
-    else cout << "請輸入兩個分數\n";
-    cin >> x >> y;
+    if( opt == 1 )
+    {
+        freopen("fraction.txt","r",stdin);
+        char u;
+        while( cin >> x >> u >> y )
+        {
+            if( u == '+' ) cout << x + y << "\n";
+            else if( u == '-' ) cout << x - y << "\n";
+            else if( u == '*' ) cout << x * y << "\n";
+            else if( u == '/' ) cout << x / y << "\n";
+        }
+    }
+    else{
+        cout << "請輸入兩個分數\n";
+         cin >> x >> y;
     
-    validate_overloading(x,y); // 跑出所有運算子 overloading 後的運算結果
-    
+         validate_overloading(x,y); // 跑出所有運算子 overloading 後的運算結果
+   }
     return 0;
 }
