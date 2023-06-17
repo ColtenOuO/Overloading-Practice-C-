@@ -96,12 +96,14 @@ Fraction Fraction::operator+(Fraction &y)
 
     if( ( this -> denominator ) != y.denominator )
     {
+        x -> denominator = y.denominator = g;
         cout << "異分母分數相加，進行通分。分母是" << g << "\n";
         cout << save1 << "+" << save2 << "=" << *x << "+" << y << "=" << z << "\n";
         cout << "最終分數是: ";
     }
     else
     {
+        x -> denominator = y.denominator = g;
         cout << "同分母分數相加。分母是" << g << "\n";
         cout << save1 << "+" << save2 << "=" << z << "\n";
         cout << "最終分數是: ";
@@ -128,12 +130,15 @@ Fraction Fraction::operator-(Fraction &y)
 
     if( ( this -> denominator ) != y.denominator )
     {
+
+        x -> denominator = y.denominator = g;
         cout << "異分母分數相減，進行通分。分母是" << g << "\n";
         cout << save1 << "-" << save2 << "=" << *x << "-" << y << "=" << z << "\n";
         cout << "最終分數是: ";
     }
     else
     {
+        x -> denominator = y.denominator = g;
         cout << "同分母分數相減。分母是" << g << "\n";
         cout << save1 << "-" << save2 << "=" << z << "\n";
         cout << "最終分數是: ";
